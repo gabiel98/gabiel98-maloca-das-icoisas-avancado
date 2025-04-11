@@ -8,7 +8,7 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 
 ### Storytelling
 
-![Big Picture](./big_picture.png) A FAZER
+![Big Picture]() A FAZER
 
 ### Situação Hipotética A FAZER
 1. **Paciente faz cirurgia**: O paciente passa pelo procedimento cirúrgico e é encaminhado para a sala de recuperação, onde começa o monitoramento.  
@@ -54,35 +54,31 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 ### Dispositivo do Médico A FAZER
 ![Esquema de Conexão](./simulacao_medico.png) 
 
-### Requisitos A FAZER
+### Requisitos
 
-#### Hardware A FAZER
+#### Hardware
 
-- 2 ESP32;
+- 1 ESP32;
 - 1 Sensor DHT11;
-- 1 Acelerômetro;
-- 1 Potênciometro;
-- 1 LED;
-- 1 Buzzer;
-- Protoboard e fios de conexão;
+- 2 Galaxy Watch 7;
 
-**OBS**: 1 ESP32, 1 DHT11 e 1 Acelerômetro fazem parte do [IoT DevKit da Robocore](https://www.robocore.net/lorawan/iot-devkit-lorawan?srsltid=AfmBOoqmLS_Qbi0Ax6Vxjbh_UVDjhF-bGfuASA7Hd9aNu3m6E26OUI9B).
-
-#### Software A FAZER
+#### Software
 
 - Flask;
 - Streamlit;
-- Arduino IDE com as bibliotecas DHT, Adafruit MPU6050 e WiFi;
+- Arduino IDE com as bibliotecas DHT e WiFi;
+- Integração com Samsung Health SDK;
 
 ## Recursos A FAZER
 
-- [Big Picture](https://www.canva.com/design/DAGX9015E_Y/igNJWoiv6dB_DmXLwmla8g/edit?utm_content=DAGX9015E_Y&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
-- [Kanban](https://trello.com/invite/b/679d35de0177ff09056da883/ATTI3be7de3ce601a0041a49b6e8a4244ee41225AD07/hands-on-maloca-intermediario)
-- [Documento de Requisitos Funcionais](https://docs.google.com/document/d/18FyWn2tTpSczmW8oEnDkLV8qdwSyeqJxpqSKUApjo3s/edit?usp=sharing)
-- [Documento de Definição de Pronto](./dod.pdf)
-- [Simulações](https://wokwi.com/projects/422903318761921537)
-- [Documento de Progresso](https://docs.google.com/document/d/174h4gjdAbioNKFlUisyWqnA86sikamhO9F9dY4ae5rM/edit?usp=sharing)
-- [Plano de Testes](./PlanodeTestes.pdf)
-- [Pitch](https://www.canva.com/design/DAGZ3R3MyE4/rqdrzCDqPH6dExHXgRsWZw/edit?utm_content=DAGZ3R3MyE4&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
-- [Esquema de Conexão](https://wokwi.com/projects/417194889520795649)
-- [Documento de Progresso](https://docs.google.com/document/d/1z1uJHj0xGks3xBqaYloMBIi3Pqf4hMfBDdSm-7swn1A/edit?tab=t.0)
+- [Big Picture]()
+- [Kanban](https://trello.com/invite/b/67f9814a70391e1f77704678/ATTI7b5a3cc73e9dc276db2bb33731acf766C5B92480/hands-on-maloca-avancado)
+- [Documento de Requisitos Funcionais](https://docs.google.com/document/d/139STMAsBITp9Wc13MITmVtwTrKqo48Z1CFOeEzPEa9E/edit?usp=sharing)
+- [Draft do Dashboard](https://docs.google.com/document/d/1C2ehc7o-pFcvJAB2sn8F75oxu_O5OohuYzn4Uq6_mu0/edit?usp=sharing)
+- [Documento de Definição de Pronto]()
+- [Simulações]()
+- [Documento de Progresso]()
+- [Plano de Testes]()
+- [Pitch]()
+- [Esquema de Conexão]()
+- [Documento de Progresso]()
