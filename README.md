@@ -8,7 +8,7 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 
 ### Storytelling
 
-![Big Picture](./big_picture) A FAZER
+![Big Picture](./big_picture.jpeg) A FAZER
 
 ### Situação Hipotética A FAZER
 1. **Paciente faz cirurgia**: O paciente passa pelo procedimento cirúrgico e é encaminhado para a sala de recuperação, onde começa o monitoramento.  
