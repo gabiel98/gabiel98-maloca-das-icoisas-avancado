@@ -10,25 +10,18 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 
 ![Big Picture](./big_picture.jpeg)
 
-### Situação Hipotética A FAZER
-1. **Paciente faz cirurgia**: O paciente passa pelo procedimento cirúrgico e é encaminhado para a sala de recuperação, onde começa o monitoramento.  
-2. **Paciente é monitorado no hospital**: Sensores de movimento, temperatura, pressão arterial e batimentos cardíacos são fixados no corpo do paciente e conectados ao sistema.  
-3. **Monitoramento contínuo no hospital**: Os sensores enviam dados em tempo real para a base de dados, e alertas são gerados caso algum parâmetro saia do padrão.  
-4. **Paciente recebe alta e vai para casa**: O paciente recebe um dispositivo portátil de monitoramento contínuo, que mantém o envio de dados para os médicos.  
-5. **Paciente passa mal em casa**: O sistema detecta alterações nos sinais vitais (ex: febre alta, pressão baixa) e gera um alerta automático.  
-6. **Médico recebe notificação e toma providências**: O profissional analisa os dados do paciente remotamente e decide as ações necessárias.  
-7. **Ambulância resgata o paciente**: O médico aciona uma ambulância, que recebe as informações do paciente e se dirige até sua residência.  
-8. **Paciente retorna ao hospital**: O paciente é readmitido no hospital, onde passa por nova avaliação médica detalhada.  
-9. **Acompanhamento do histórico do paciente**: O médico acessa os dados coletados pelo dispositivo para auxiliar no diagnóstico e no tratamento.  
-<!--
-1. Pessoa doente vai para o hospital, é atendida e admitida na internação;
-2. Médicos colocam sensores de temperatura fixos no corpo da paciente;
-3. Sensor de temperatura é conectado a uma base de dados alimentada em tempo real;
-4. Quando a temperatua do paciente for ≥ 37.8 ºC, o sistema emite um alerta para os profissionais envolvidos;
-5. O sistema registra o histórico da temperatura do paciente na base de dados;
-6. O profissional verifica condição do paciente após alertas.
--->
+### Situação Hipotética
+1. **Paciente faz cirurgia**: O paciente é cadastrado no sistema via Dashboard PSM 2.0, Dispositivos (Galaxy Watch 7 e sensor DHT11) são vinculados ao paciente, Os sensores são configurados para iniciar o monitoramento imediatamente após a cirurgia.  
+2. **Paciente é monitorado no hospital**: Sensores coletam dados em tempo real: temperatura, pressão arterial, batimentos cardíacos, movimento, oxigênio e glicose, Dados são transmitidos via Samsung Health SDK para o backend Flask, Gráficos em tempo real são exibidos no Dashboard para a equipe médica.  
+3. **Monitoramento contínuo no hospital**: Limiares de alerta são configurados (ex.: temperatura > 37.8°C, batimentos > 130 BPM), Se um parâmetro ultrapassar o limite, o sistema publica um alerta no tópico MQTT, Médicos recebem notificações em seus smartwatches.  
+4. **Paciente recebe alta e vai para casa**: O paciente recebe um dispositivo portátil (Galaxy Watch 7 + sensor DHT11) configurado para modo remoto, Os dados continuam sendo transmitidos via Wi-Fi/Bluetooth para o backend, O Dashboard atualiza o status do paciente para "Monitoramento Remoto".  
+5. **Paciente passa mal em casa**: O sensor detecta febre alta (39°C) e pressão arterial crítica (80/50 mmHg), O Flask gera um alerta imediato (ALERT:Febre detectada,Pressão arterial baixa) e publica no MQTT, Latência do alerta: < 10 segundos.
+6. **Médico recebe notificação e toma providências**: O médico recebe uma notificação em seu Galaxy Watch com detalhes do alerta, Confirma o alerta via smartwatch, registrando a ação no histórico, Acessa o Dashboard para analisar os dados em tempo real do paciente.  
+7. **Ambulância resgata o paciente**: O médico aciona a ambulância via Dashboard, compartilhando automaticamente os dados críticos (endpoint /emergencia), A ambulância recebe informações como localização, últimos sinais vitais e histórico médico.
+8. **Paciente retorna ao hospital**: O status do paciente é atualizado para "Readmitido" no sistema, Novos dados de avaliação são registrados no Firestore.  
+9. **Acompanhamento do histórico do paciente**: O médico filtra dados por período (ex.: últimas 24 horas) e métricas, Gera um relatório em CSV com tendências de temperatura e batimentos, Dados históricos são usados para ajustar o tratamento (ex.: antibioticoterapia para febre persistente).
 
+ 
 ## Equipe 
 
 <div align="center">
