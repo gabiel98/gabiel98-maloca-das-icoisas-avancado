@@ -68,7 +68,7 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 - [Kanban](https://trello.com/invite/b/67f9814a70391e1f77704678/ATTI7b5a3cc73e9dc276db2bb33731acf766C5B92480/hands-on-maloca-avancado)
 - [Documento de Requisitos Funcionais](https://docs.google.com/document/d/139STMAsBITp9Wc13MITmVtwTrKqo48Z1CFOeEzPEa9E/edit?usp=sharing)
 - [Draft do Dashboard](https://docs.google.com/document/d/1C2ehc7o-pFcvJAB2sn8F75oxu_O5OohuYzn4Uq6_mu0/edit?usp=sharing)
-- [Rascunho do prototipo](./RascunhoPrototipo3d.jpeg) 
+- [Rascunho do protótipo](./RascunhoPrototipo3d.jpeg) 
 
 ### A FAZER
 
