@@ -44,9 +44,6 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 ### Dispositivo do Paciente
 ![Esquema de Conexão](./simulacao_paciente.png) 
 
-### Dispositivo do Médico A FAZER
-![Esquema de Conexão](./simulacao_medico.png) 
-
 ### Requisitos
 
 #### Hardware
@@ -74,4 +71,3 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 ### A FAZER
 
 - [Pitch]() A FAZER
-- [Esquema de Conexão]() A FAZER
