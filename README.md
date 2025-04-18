@@ -72,11 +72,6 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 
 ### A FAZER
 
-
-- [Documento de Definição de Pronto]() A FAZER
-- [Simulações]() A FAZER
-- [Documento de Progresso]() A FAZER
-- [Plano de Testes]() A FAZER
 - [Pitch]() A FAZER
 - [Esquema de Conexão]() A FAZER
 - [Documento de Progresso]() A FAZER
