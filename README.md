@@ -67,6 +67,7 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 - [Big Picture](https://www.canva.com/design/DAGX9015E_Y/igNJWoiv6dB_DmXLwmla8g/edit?utm_content=DAGX9015E_Y&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 - [Kanban](https://trello.com/invite/b/67f9814a70391e1f77704678/ATTI7b5a3cc73e9dc276db2bb33731acf766C5B92480/hands-on-maloca-avancado)
 - [Documento de Requisitos Funcionais](https://docs.google.com/document/d/139STMAsBITp9Wc13MITmVtwTrKqo48Z1CFOeEzPEa9E/edit?usp=sharing)
+- [Documento de Progresso](https://docs.google.com/document/d/1bgMEeEQhJlnWOdWcRUyse7d14oNcHCMup1lYqwKh_Mo/edit?usp=sharing)
 - [Draft do Dashboard](https://docs.google.com/document/d/1C2ehc7o-pFcvJAB2sn8F75oxu_O5OohuYzn4Uq6_mu0/edit?usp=sharing)
 - [Rascunho do protótipo](./RascunhoPrototipo3d.jpeg) 
 
@@ -74,4 +75,3 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 
 - [Pitch]() A FAZER
 - [Esquema de Conexão]() A FAZER
-- [Documento de Progresso]() A FAZER
