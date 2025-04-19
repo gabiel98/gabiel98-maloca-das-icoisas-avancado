@@ -67,7 +67,9 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 - [Documento de Requisitos Funcionais](https://docs.google.com/document/d/139STMAsBITp9Wc13MITmVtwTrKqo48Z1CFOeEzPEa9E/edit?usp=sharing)
 - [Documento de Progresso](https://docs.google.com/document/d/1bgMEeEQhJlnWOdWcRUyse7d14oNcHCMup1lYqwKh_Mo/edit?usp=sharing)
 - [Draft do Dashboard](https://docs.google.com/document/d/1C2ehc7o-pFcvJAB2sn8F75oxu_O5OohuYzn4Uq6_mu0/edit?usp=sharing)
-- [Rascunho do protótipo](./RascunhoPrototipo3d.jpeg) 
+- ![Rascunho do protótipo](./RascunhoPrototipo3d.jpeg)
+- ![Protótipo](./PrototipoFisico.jpeg) 
+
 
 ### Falta Fazer
 
