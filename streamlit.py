@@ -65,6 +65,16 @@ if 'PACIENTES' not in st.session_state:
 if 'dados_acumulados' not in st.session_state:
     st.session_state.dados_acumulados = {}
 
+if 'limites' not in st.session_state:
+    st.session_state.limites = {
+        'temperatura': (35.5, 37.5),
+        'batimento_cardiaco': (60, 120),
+        'pressao_sistolica': (90, 140),
+        'pressao_diastolica': (60, 90),
+        'glicose': (70, 180),
+        'oxigenio': (95, 100)
+    }
+
 def detectar_anomalias(df):
     try:
         if len(df) < 5:
@@ -93,13 +103,13 @@ def processar_anomalias(df):
             motivo = []
             if row['Anomalia_IF'] == -1 or row['Anomalia_LOF'] == -1:
                 # Verificar parâmetros fora do normal
-                if row['batimento_cardiaco'] > 120:
+                if row['batimento_cardiaco'] > st.session_state.limites['batimento_cardiaco'][1]:
                     motivo.append("Batimento cardíaco elevado")
-                if row['temperatura'] > 37.5:
+                if row['temperatura'] > st.session_state.limites['temperatura'][1]:
                     motivo.append("Febre")
-                if row['batimento_cardiaco'] < 60:
+                if row['batimento_cardiaco'] < st.session_state.limites['batimento_cardiaco'][0]:
                     motivo.append("Bradicardia")
-                if row['temperatura'] < 35.5:
+                if row['temperatura'] < st.session_state.limites['temperatura'][0]:
                     motivo.append("Hipotermia")
                 
                 if not motivo:  # Se nenhum motivo óbvio, usar explicação genérica
@@ -259,7 +269,7 @@ def fetch_data():
         st.error(f"Erro ao buscar dados: {str(e)}")
         return pd.DataFrame(), pd.DataFrame()
     
-# Funções gráficas adicionais corrigidas
+# Funções gráficas
 def create_pressure_chart(df):
     fig = go.Figure()
     if not df.empty:
@@ -336,16 +346,7 @@ def check_alertas(df):
         return alertas
     ultimo = df.iloc[-1]
     
-    limites = {
-        'temperatura': (35.5, 37.5),
-        'batimento_cardiaco': (60, 120),
-        'pressao_sistolica': (90, 140),
-        'pressao_diastolica': (60, 90),
-        'glicose': (70, 180),
-        'oxigenio': (95, 100)
-    }
-    
-    for parametro, (minimo, maximo) in limites.items():
+    for parametro, (minimo, maximo) in st.session_state.limites.items():
         valor = ultimo[parametro]
         if valor < minimo:
             alertas.append(f"🔻 {parametro.capitalize()} baixa: {valor:.2f} (Mín: {minimo})")
@@ -363,12 +364,10 @@ with st.sidebar:
             
         if not st.session_state.logged_in:
             with st.form("login_form"):
-                # Container estilo cartão
                 with st.container():
                     st.markdown("""
                     <style>
                         div[data-testid="stForm"] > div:first-child {
-                            border: 1px solid #4B79A1;
                             border-radius: 10px;
                             padding: 20px;
                         }
@@ -381,13 +380,16 @@ with st.sidebar:
                     col1, col2, col3 = st.columns([1,2,1])
                     with col2:
                         if st.form_submit_button("🚪 **Login**", use_container_width=True):
-                            # Login simulado - qualquer senha funciona
                             st.session_state.logged_in = True
                             st.session_state.medico = usuario
                             st.rerun()
                 st.stop()
         else:
             st.success(f"👤 Logado como: {st.session_state.medico}", icon="✅")
+            if st.button("🚪 Sair"):
+                st.session_state.logged_in = False
+                del st.session_state.medico
+                st.rerun()
 
     st.subheader("⚙️ Configurações")
     
@@ -425,8 +427,21 @@ with st.sidebar:
                     del st.session_state.adicionando_paciente
                     st.rerun()
 
+    with st.expander("📊 Configurar Limites"):
+        with st.form("limites_form"):
+            novos_limites = {}
+            for param, (min_val, max_val) in st.session_state.limites.items():
+                col1, col2 = st.columns(2)
+                novo_min = col1.number_input(f"Mín {param}", value=min_val)
+                novo_max = col2.number_input(f"Máx {param}", value=max_val)
+                novos_limites[param] = (novo_min, novo_max)
+            
+            if st.form_submit_button("💾 Salvar Limites"):
+                st.session_state.limites = novos_limites
+                st.success("Limites atualizados com sucesso!")
+
     paciente = st.selectbox('👨⚕️ Paciente', st.session_state.PACIENTES)
-    tempo_real = st.checkbox('📡 Tempo Real', True)
+    tempo_real = st.checkbox('📡 Dados Simulados', True)
     
     if not tempo_real:
         st.subheader("📅 Período Histórico")
@@ -438,8 +453,6 @@ with st.sidebar:
 
 def render_visao_geral(df):
     st.header(f"📊 Monitoramento - {paciente}")
-    
-    # Exibir médico responsável com formatação completa
     medico = st.session_state.get('medico', 'Nenhum médico logado')
     st.subheader(f"👨⚕️ Médico Responsável: {medico}")
     
@@ -465,21 +478,21 @@ def create_vital_chart(df):
             y=df['temperatura'],
             name="Temperatura",
             line=dict(color=COLOR_PALETTE[0], width=2)
-        ), row=1, col=1)  # Correção aqui
+        ), row=1, col=1)
 
         fig.add_trace(go.Scatter(
             x=df['timestamp'], 
             y=df['batimento_cardiaco'],
             name="BPM",
             line=dict(color=COLOR_PALETTE[1], width=2)
-        ), row=2, col=1)  # Correção aqui
+        ), row=2, col=1)
 
         fig.add_trace(go.Scatter(
             x=df['timestamp'], 
             y=df['oxigenio'],
             name="SpO2",
             line=dict(color=COLOR_PALETTE[2], width=2)
-        ), row=3, col=1)  # Correção aqui
+        ), row=3, col=1)
     
     fig.update_layout(height=600, template="plotly_white", showlegend=False)
     return fig
@@ -488,10 +501,8 @@ def create_anomaly_chart(df):
     fig = make_subplots(rows=1, cols=2, subplot_titles=('Isolation Forest', 'LOF'))
     
     if not df.empty and 'Anomalia_IF' in df.columns and 'Anomalia_LOF' in df.columns:
-        # Formatar timestamps
         df['timestamp_str'] = df['timestamp'].dt.strftime('%Y-%m-%d %H:%M:%S')
         
-        # Adicionar texto de hover personalizado
         fig.add_trace(go.Scatter(
             x=df['batimento_cardiaco'],
             y=df['temperatura'],
@@ -530,7 +541,6 @@ def create_anomaly_chart(df):
         showlegend=False
     )
     return fig
-
 
 def render_alertas(alertas):
     with st.container():
@@ -578,7 +588,6 @@ try:
         with tab5:  
             st.plotly_chart(create_anomaly_chart(df), use_container_width=True)
             
-            # Mostrar tabela de anomalias
             df_anomalias = processar_anomalias(df)
             if not df_anomalias.empty:
                 st.subheader("📋 Detalhes das Anomalias Detectadas")
