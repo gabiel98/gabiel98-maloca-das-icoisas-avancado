@@ -8,7 +8,7 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 
 ### Storytelling
 
-![Big Picture](./big_picture.jpeg)
+![Big Picture](./big_picture.png)
 
 ### Situação Hipotética
 1. **Paciente faz cirurgia**: O paciente é cadastrado no sistema via Dashboard PSM 2.0, Dispositivos (Galaxy Watch 7 e sensor DHT11) são vinculados ao paciente, Os sensores são configurados para iniciar o monitoramento imediatamente após a cirurgia.  
