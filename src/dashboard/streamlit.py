@@ -184,11 +184,14 @@ def generate_random_data(real_time=True, start=None, end=None):
         }
 
         if real_time:
-            now = datetime.now() - timedelta(days=1)
+            if start:
+                now = start
+            else:
+                now = datetime.now() - timedelta(days=1)
+                
             num_points = np.random.randint(5, 10)
 
             if paciente in st.session_state.dados_acumulados:
-                print(st.session_state.dados_acumulados[paciente])
                 ultimo_ts = st.session_state.dados_acumulados[paciente][0][
                     "timestamp"
                 ].iloc[-1]
@@ -198,7 +201,7 @@ def generate_random_data(real_time=True, start=None, end=None):
                 ]
             else:
                 timestamps = [
-                    now - timedelta(seconds=10 * i) for i in range(num_points)
+                    now + timedelta(seconds=10 * i) for i in range(num_points)
                 ]
         else:
             start_dt = datetime.combine(start[0], start[1])
@@ -304,15 +307,16 @@ def self_generate_activity(length, transition_prob):
 def fetch_data():
     try:
         if tempo_real:
-            novo_df, novo_atividades = generate_random_data(real_time=True)
-
             if paciente not in st.session_state.dados_acumulados:
-                combined_df = novo_df
-                combined_ativ = novo_atividades
+                combined_df, combined_ativ = generate_random_data(real_time=True)
             else:
                 old_df, old_ativ = st.session_state.dados_acumulados[paciente]
-                combined_df = pd.concat([old_df, novo_df]).reset_index(drop=True)
-                combined_ativ = pd.concat([old_ativ, novo_atividades]).reset_index(
+                ultimo_ts = old_df[
+                    "timestamp"
+                ].sort_values().iloc[-1]
+                df, df_atv = generate_random_data(real_time=True, start=ultimo_ts)
+                combined_df = pd.concat([old_df, df]).reset_index(drop=True)
+                combined_ativ = pd.concat([old_ativ, df_atv]).reset_index(
                     drop=True
                 )
 
@@ -392,9 +396,7 @@ with st.sidebar:
                 st.session_state.logged_in = False
                 del st.session_state.medico
                 st.rerun()
-
-    st.subheader("⚙️ Configurações")
-
+                
     with st.expander("👥 Gerenciar Pacientes"):
         col1, col2 = st.columns(2)
         with col1:
@@ -433,24 +435,6 @@ with st.sidebar:
                 if st.form_submit_button("❌ Cancelar"):
                     del st.session_state.adicionando_paciente
                     st.rerun()
-
-    with st.expander("📊 Configurar Limites"):
-        with st.form("limites_form"):
-            novos_limites = {}
-            for param, attrs in st.session_state.limites.items():
-                col1, col2 = st.columns(2)
-                novo_min = col1.number_input(f"Mín {param}", value=attrs["min"])
-                novo_max = col2.number_input(f"Máx {param}", value=attrs["max"])
-                novos_limites[param] = {
-                    "min": novo_min,
-                    "max": novo_max,
-                    "msg_min": attrs["msg_min"],
-                    "msg_max": attrs["msg_max"],
-                }
-
-            if st.form_submit_button("💾 Salvar Limites"):
-                st.session_state.limites = novos_limites
-                st.success("Limites atualizados com sucesso!")
 
     paciente = st.selectbox("👨 Paciente", st.session_state.PACIENTES)
     tempo_real = st.checkbox("⏱️ Monitoramento em Tempo Real", True)
@@ -695,7 +679,7 @@ try:
         render_alertas(alertas)
 
         st.subheader("📈 Visualização de Dados")
-        tab1, tab2 = st.tabs(["Dados de Saúde", "Anomalias"])
+        tab1, tab2, tab3 = st.tabs(["Dados de Saúde", "Anomalias", "Configurações"])
 
         with tab1:
             st.plotly_chart(
@@ -707,7 +691,6 @@ try:
 
             df_anomalias = processar_anomalias(df)
             if not df_anomalias.empty:
-                print(df_anomalias.columns)
                 df_anomalias = df_anomalias.sort_values(by=["Data/Hora"], ascending=False)
                 st.subheader("📋 Detalhes das Anomalias Detectadas")
                 st.dataframe(
@@ -737,8 +720,28 @@ try:
             else:
                 st.info("Nenhuma anomalia detectada no período selecionado")
 
+        with tab3:
+            st.header("📊 Configurar Limites")
+            
+            with st.form("limites_form"):
+                novos_limites = {}
+                for param, attrs in st.session_state.limites.items():
+                    col1, col2 = st.columns(2)
+                    novo_min = col1.number_input(f"Mín {param}", value=attrs["min"])
+                    novo_max = col2.number_input(f"Máx {param}", value=attrs["max"])
+                    novos_limites[param] = {
+                        "min": novo_min,
+                        "max": novo_max,
+                        "msg_min": attrs["msg_min"],
+                        "msg_max": attrs["msg_max"],
+                    }
+
+                if st.form_submit_button("💾 Salvar Limites"):
+                    st.session_state.limites = novos_limites
+                    st.success("Limites atualizados com sucesso!")
+
     if tempo_real:
-        time.sleep(15)
+        time.sleep(5)
         st.rerun()
 
 except Exception as e:
