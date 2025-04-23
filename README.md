@@ -67,15 +67,15 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 - [Documento de Requisitos Funcionais](https://docs.google.com/document/d/139STMAsBITp9Wc13MITmVtwTrKqo48Z1CFOeEzPEa9E/edit?usp=sharing)
 - [Documento de Progresso](https://docs.google.com/document/d/1bgMEeEQhJlnWOdWcRUyse7d14oNcHCMup1lYqwKh_Mo/edit?usp=sharing)
 - [Draft do Dashboard](https://docs.google.com/document/d/1C2ehc7o-pFcvJAB2sn8F75oxu_O5OohuYzn4Uq6_mu0/edit?usp=sharing)
+- [Impressão 3D da manopla]([https://trello.com/invite/b/67f9814a70391e1f77704678/ATTI7b5a3cc73e9dc276db2bb33731acf766C5B92480/hands-on-maloca-avancado](https://www.tinkercad.com/things/jRywDCm9EJq-copy-of-manopla-pos-cirurgica-suricates-?sharecode=0sUWq_mmopyBLxGs9N16jS2lAAK12oiFNIAJIxsAgPY))
 - ![Rascunho do protótipo](./RascunhoPrototipo3d.jpeg)
 - ![Protótipo](./PrototipoFisico.jpeg)
-- [Impressão 3D da manopla]([https://trello.com/invite/b/67f9814a70391e1f77704678/ATTI7b5a3cc73e9dc276db2bb33731acf766C5B92480/hands-on-maloca-avancado](https://www.tinkercad.com/things/jRywDCm9EJq-copy-of-manopla-pos-cirurgica-suricates-?sharecode=0sUWq_mmopyBLxGs9N16jS2lAAK12oiFNIAJIxsAgPY))
+
 
 
 
 ### Falta Fazer
 
 - [ ] Pitch
-- [ ] Impressão 3D da manopla
 - [ ] Código para integração com Health Connect SDK
 - [ ] Integração de dados reais no Streamlit
