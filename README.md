@@ -77,6 +77,5 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 
 ### Falta Fazer
 
-- [ ] Pitch
 - [ ] Código para integração com Health Connect SDK
 - [ ] Integração de dados reais no Streamlit
