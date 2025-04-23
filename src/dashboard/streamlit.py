@@ -154,6 +154,7 @@ def processar_anomalias(df):
 
                 anomalias.append(
                     {
+                        "timestamp": row["timestamp"],
                         "Data/Hora": row["timestamp"].strftime("%d/%m/%Y %H:%M:%S"),
                         "Batimento Cardíaco (BPM)": row["batimento_cardiaco"],
                         "Temperatura (°C)": f"{row['temperatura']:.1f}",
@@ -586,66 +587,70 @@ def create_vital_chart(df, df_atividades):
 
 
 def create_anomaly_chart(df):
-    fig = make_subplots(rows=1, cols=2, subplot_titles=("Isolation Forest", "LOF"))
-
-    if not df.empty and "Anomalia_IF" in df.columns and "Anomalia_LOF" in df.columns:
-        df["timestamp_str"] = df["timestamp"].dt.strftime("%Y-%m-%d %H:%M:%S")
-
-        fig.add_trace(
-            go.Scatter(
-                x=df["batimento_cardiaco"],
-                y=df["temperatura"],
-                mode="markers",
-                marker=dict(
-                    color=np.where(
-                        df["Anomalia_IF"] == -1, COLOR_PALETTE[2], COLOR_PALETTE[1]
-                    ),
-                    size=8,
-                    line=dict(width=1, color="DarkSlateGrey"),
-                ),
-                text=df.apply(
-                    lambda row: f"Data: {row['timestamp_str']}<br>Batimento: {row['batimento_cardiaco']}<br>Temperatura: {row['temperatura']:.1f}",
-                    axis=1,
-                ),
-                hoverinfo="text",
-                showlegend=False,
-            ),
-            row=1,
-            col=1,
+    fig = go.Figure()
+    
+    if not df.empty and 'Motivo' in df.columns:
+        # Convert timestamp to datetime if not already
+        df['Data/Hora'] = pd.to_datetime(df['Data/Hora'])
+        
+        # Split and explode motives
+        df_exp = df.copy()
+        df_exp['Motivo'] = df_exp['Motivo'].str.split(', ')
+        df_exp = df_exp.explode('Motivo').reset_index(drop=True)
+        
+        # Clean motives and handle empty values
+        df_exp['Motivo'] = (
+            df_exp['Motivo']
+            .fillna('No Anomaly')
+            .replace('', 'No Anomaly')
+        )
+        
+        # Filter out non-anomaly entries if needed
+        df_exp = df_exp[df_exp['Motivo'] != 'No Anomaly']
+        
+        # Create proper counts using EXPLODED dataframe
+        grouped = (
+            df_exp.groupby(['Data/Hora', 'Motivo'])
+            .size()
+            .unstack(fill_value=0)
+            .reset_index()
+            .melt(
+                id_vars='Data/Hora', 
+                value_name='count', 
+                var_name='motive'
+            )
         )
 
-        fig.add_trace(
-            go.Scatter(
-                x=df["batimento_cardiaco"],
-                y=df["temperatura"],
-                mode="markers",
-                marker=dict(
-                    color=np.where(
-                        df["Anomalia_LOF"] == -1, COLOR_PALETTE[2], COLOR_PALETTE[1]
-                    ),
-                    size=8,
-                    line=dict(width=1, color="DarkSlateGrey"),
-                ),
-                text=df.apply(
-                    lambda row: f"Data: {row['timestamp_str']}<br>Batimento: {row['batimento_cardiaco']}<br>Temperatura: {row['temperatura']:.1f}",
-                    axis=1,
-                ),
-                hoverinfo="text",
-                showlegend=False,
-            ),
-            row=1,
-            col=2,
+        # Create color mapping
+        motives = grouped['motive'].unique()
+        color_map = {m: COLOR_PALETTE[i%len(COLOR_PALETTE)] 
+                    for i, m in enumerate(motives)}
+
+        # Add stacked bars
+        for motive in motives:
+            motive_df = grouped[grouped['motive'] == motive]
+            fig.add_trace(go.Bar(
+                x=motive_df['Data/Hora'],
+                y=motive_df['count'],
+                name=motive,
+                marker_color=color_map[motive],
+            ))
+
+        # Configure layout
+        fig.update_layout(
+            barmode='stack',
+            height=400,
+            template="plotly_white",
+            xaxis_title="Timestamp",
+            yaxis_title="Total Anomalies",
+            hovermode="x unified",
+            legend_title="Anomaly Motive",
+            xaxis=dict(
+                type='date',
+                tickformat='%Y-%m-%d %H:%M'
+            )
         )
 
-    fig.update_layout(
-        height=400,
-        template="plotly_white",
-        xaxis_title="Batimento Cardíaco (BPM)",
-        yaxis_title="Temperatura (°C)",
-        xaxis2_title="Batimento Cardíaco (BPM)",
-        yaxis2_title="Temperatura (°C)",
-        showlegend=False,
-    )
     return fig
 
 
@@ -687,9 +692,9 @@ try:
             )
 
         with tab2:
-            st.plotly_chart(create_anomaly_chart(df), use_container_width=True)
-
             df_anomalias = processar_anomalias(df)
+            st.plotly_chart(create_anomaly_chart(df_anomalias), use_container_width=True)
+
             if not df_anomalias.empty:
                 df_anomalias = df_anomalias.sort_values(by=["Data/Hora"], ascending=False)
                 st.subheader("📋 Detalhes das Anomalias Detectadas")
