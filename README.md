@@ -2,7 +2,16 @@
 
 [Link](https://github.com/gabiel98/gabiel98-maloca-das-icoisas-avancado)
 
-Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grupo 4 - Os Suricatos Cibernéticos.
+Projeto realizado no curso [Maloca das iCoisas](https://github.com/Maloca-iCoisas) durante o módulo avançado. Somos o grupo 4 - Os Suricatos Cibernéticos, e nosso projeto é a continuação daquele que demos início no módulo intermediário. Ele consiste em um dispositivo de monitoramento de pacientes pós-cirúrgicos.
+
+Alguns dos diferenciais deles são:
+
+- Disponibilização de API disponível publicamente para cadastro de pacientes e sincronização de dados com Health Connect;
+- Disponibilização de dashboard, acoplado com modelos de IA para detecção de anomalias, para uso de médicos, enfermeiros e profissionais de saúde autônomos;
+- Alertas para que as respostas a emergências sejam mais rápidas e assertivas.
+
+> [!NOTE]
+> Destaco os créditos ao [Shuchir Jain](https://shuchir.dev/), criador do [HCGateway](https://github.com/ShuchirJ/HCGateway). Sem o trabalho dele, não teria sido possível desenvolver a API em tempo hábil para finalizar o projeto.
 
 ## Big Picture
 
@@ -39,7 +48,7 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 - Gabriel Peixoto Menezes da Costa;
 - Natália Ribeiro de Almada;
 
-## Esquema de Conexão A FAZER
+## Esquema de Conexão
 
 ### Dispositivo do Paciente
 ![Esquema de Conexão](./simulacao_paciente.png) 
@@ -55,7 +64,11 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 #### Software
 
 - Flask;
+- Docker;
+- MongoDB;
+- Coolify;
 - Streamlit;
+- [HCGateway](https://github.com/ShuchirJ/HCGateway);
 - Arduino IDE com as bibliotecas DHT e WiFi;
 - Integração com Samsung Health SDK;
 
@@ -69,13 +82,11 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 - [Draft do Dashboard](https://docs.google.com/document/d/1C2ehc7o-pFcvJAB2sn8F75oxu_O5OohuYzn4Uq6_mu0/edit?usp=sharing)
 - [Pitch](https://www.canva.com/design/DAGlHtj_Dbw/z7gQhzEXTac-saG-JPqG7Q/edit?utm_content=DAGlHtj_Dbw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 - [Impressão 3D da manopla](https://www.tinkercad.com/things/jRywDCm9EJq-copy-of-manopla-pos-cirurgica-suricates-?sharecode=0sUWq_mmopyBLxGs9N16jS2lAAK12oiFNIAJIxsAgPY)
-- Rascunho do protótipo ![Rascunho do protótipo](./RascunhoPrototipo3dCROP.jpeg)
-- Protótipo Físico ![Protótipo](./PrototipoFisicoCROP.jpeg)   
 
+#### Rascunho do protótipo
 
+![Rascunho do protótipo](./RascunhoPrototipo3dCROP.jpeg)
 
+#### Protótipo Físico
 
-### Falta Fazer
-
-- [ ] Código para integração com Health Connect SDK
-- [ ] Integração de dados reais no Streamlit
+![Protótipo](./PrototipoFisicoCROP.jpeg)
