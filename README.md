@@ -69,7 +69,9 @@ Projeto realizado no curso Maloca das iCoisas, módulo intermediário, pelo grup
 - [Draft do Dashboard](https://docs.google.com/document/d/1C2ehc7o-pFcvJAB2sn8F75oxu_O5OohuYzn4Uq6_mu0/edit?usp=sharing)
 - [Pitch](https://www.canva.com/design/DAGlHtj_Dbw/z7gQhzEXTac-saG-JPqG7Q/edit?utm_content=DAGlHtj_Dbw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 - [Impressão 3D da manopla](https://www.tinkercad.com/things/jRywDCm9EJq-copy-of-manopla-pos-cirurgica-suricates-?sharecode=0sUWq_mmopyBLxGs9N16jS2lAAK12oiFNIAJIxsAgPY)
+- Rascunho do protótipo
 - ![Rascunho do protótipo](./RascunhoPrototipo3dCROP.jpeg)
+- Protótipo Físico
 - ![Protótipo](./PrototipoFisicoCROP.jpeg)   
 
 
