@@ -11,7 +11,7 @@ Alguns dos diferenciais deles são:
 - Alertas para que as respostas a emergências sejam mais rápidas e assertivas.
 
 > [!NOTE]
-> Destaco os créditos ao [Shuchir Jain](https://shuchir.dev/), criador do [HCGateway](https://github.com/ShuchirJ/HCGateway). Sem o trabalho dele, não teria sido possível desenvolver a API em tempo hábil para finalizar o projeto.
+> Destacamos os créditos ao [Shuchir Jain](https://shuchir.dev/), criador do [HCGateway](https://github.com/ShuchirJ/HCGateway). Sem o trabalho dele, não teria sido possível desenvolver a API em tempo hábil para finalizar o projeto.
 
 ## Big Picture
 
