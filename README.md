@@ -17,7 +17,7 @@ Alguns dos diferenciais deles são:
 
 ### Storytelling
 - [Pitch Video do Produto](https://youtu.be/69h1PzXl2rQ)
-![Big Picture](./big_picturebg.png)
+- Big Picture ![Big Picture](./big_picturebg.png)
 
 ### Situação Hipotética
 1. **Paciente faz cirurgia**: O paciente é cadastrado no sistema via Dashboard PSM 2.0, Dispositivos (Galaxy Watch 7 e sensor DHT11) são vinculados ao paciente, Os sensores são configurados para iniciar o monitoramento imediatamente após a cirurgia.  
