@@ -12,7 +12,8 @@ Alguns dos diferenciais deles são:
 
 > [!NOTE]
 > Destaco os créditos ao [Shuchir Jain](https://shuchir.dev/), criador do [HCGateway](https://github.com/ShuchirJ/HCGateway). Sem o trabalho dele, não teria sido possível desenvolver a API em tempo hábil para finalizar o projeto.
-![Trailer do Produto](https://youtu.be/69h1PzXl2rQ)
+
+- ![Trailer do Produto](https://youtu.be/69h1PzXl2rQ)
 ## Big Picture
 
 ### Storytelling
