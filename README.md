@@ -65,7 +65,6 @@ Alguns dos diferenciais deles são:
 
 #### Software
 
-- Flask;
 - Docker;
 - MongoDB;
 - Coolify;
