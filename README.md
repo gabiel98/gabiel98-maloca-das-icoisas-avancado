@@ -16,7 +16,7 @@ Alguns dos diferenciais deles são:
 ## Big Picture
 
 ### Storytelling
-[Pitch Video do Produto](https://youtu.be/69h1PzXl2rQ)
+- [Pitch Video do Produto](https://youtu.be/69h1PzXl2rQ)
 ![Big Picture](./big_picturebg.png)
 
 ### Situação Hipotética
