@@ -60,7 +60,8 @@ Alguns dos diferenciais deles são:
 
 - 1 ESP32;
 - 1 Sensor DHT11;
-- 2 Galaxy Watch 7;
+- 1 Galaxy Watch 7;
+- 1 Galaxy Watch 4;
 
 #### Software
 
