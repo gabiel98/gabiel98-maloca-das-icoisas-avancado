@@ -1,3 +1,4 @@
+import requests
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,6 +8,11 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from sklearn.ensemble import IsolationForest
 from sklearn.neighbors import LocalOutlierFactor
+from functools import reduce
+
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # Configurações da página
 st.set_page_config(
@@ -189,7 +195,7 @@ def generate_random_data(real_time=True, start=None, end=None):
                 now = start
             else:
                 now = datetime.now() - timedelta(days=1)
-                
+
             num_points = np.random.randint(5, 10)
 
             if paciente in st.session_state.dados_acumulados:
@@ -312,14 +318,10 @@ def fetch_data():
                 combined_df, combined_ativ = generate_random_data(real_time=True)
             else:
                 old_df, old_ativ = st.session_state.dados_acumulados[paciente]
-                ultimo_ts = old_df[
-                    "timestamp"
-                ].sort_values().iloc[-1]
+                ultimo_ts = old_df["timestamp"].sort_values().iloc[-1]
                 df, df_atv = generate_random_data(real_time=True, start=ultimo_ts)
                 combined_df = pd.concat([old_df, df]).reset_index(drop=True)
-                combined_ativ = pd.concat([old_ativ, df_atv]).reset_index(
-                    drop=True
-                )
+                combined_ativ = pd.concat([old_ativ, df_atv]).reset_index(drop=True)
 
             combined_df = detectar_anomalias(combined_df)
             st.session_state.dados_acumulados[paciente] = (combined_df, combined_ativ)
@@ -332,6 +334,133 @@ def fetch_data():
             )
             return df_historico, df_ativ_historico
 
+    except Exception as e:
+        st.error(f"Erro ao buscar dados: {str(e)}")
+        return pd.DataFrame(), pd.DataFrame()
+
+
+def get_api_data(method: str):
+    login_data = requests.post(
+        "https://api-maloca.ed-henrique.com/api/v2/login",
+        headers={
+            "Content-Type": "application/json",
+        },
+        json={
+            "username": "Gabriel",
+            "password": "1234",
+        },
+    ).json()
+
+    token = login_data["token"]
+
+    raw = requests.post(
+        f"https://api-maloca.ed-henrique.com/api/v2/fetch/{method}",
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {token}",
+        },
+        json={
+            "queries": {},
+        },
+    ).json()
+
+    return raw
+
+
+def fetch_data_from_api():
+    try:
+        if tempo_real:
+            bpm_raw = get_api_data("heartRate")
+            bpm = []
+            for dados in [x["data"]["samples"] for x in bpm_raw]:
+                for dado in dados:
+                    bpm.append((dado["beatsPerMinute"], dado["time"]))
+            df_bpm = pd.DataFrame(bpm, columns=["batimento_cardiaco", "timestamp"])
+
+            # glicose_raw = get_api_data("bloodGlucose")
+            glicose = []
+            df_glicose = pd.DataFrame(glicose, columns=["timestamp", "glicose"])
+
+            oxigenio_raw = get_api_data("oxygenSaturation")
+            oxigenio = []
+            for dados in oxigenio_raw:
+                oxigenio.append((dados["data"]["percentage"], dados["start"]))
+            df_oxigenio = pd.DataFrame(oxigenio, columns=["oxigenio", "timestamp"])
+
+            pressao_raw = get_api_data("bloodPressure")
+            pressao = []
+            for dados in pressao_raw:
+                pressao.append(
+                    (
+                        dados["data"]["diastolic"]["inMillimetersOfMercury"],
+                        dados["data"]["systolic"]["inMillimetersOfMercury"],
+                        dados["start"],
+                    )
+                )
+            df_pressao = pd.DataFrame(
+                pressao,
+                columns=["pressao_sistolica", "pressao_diastolica", "timestamp"],
+            )
+
+            # temperatura_raw = get_api_data("bodyTemperature")
+            temperatura = []
+            df_temperatura = pd.DataFrame(
+                temperatura, columns=["timestamp", "temperatura"]
+            )
+
+            exercicio_raw = get_api_data("exerciseSession")
+            exercicio = []
+            for dados in exercicio_raw:
+                exercicio.append(
+                    (
+                        "Atividade",
+                        dados["start"],
+                        dados["end"],
+                        (
+                            datetime.strptime(dados["end"], "%Y-%m-%dT%H:%M:%S.%f%z")
+                            - datetime.strptime(
+                                dados["start"], "%Y-%m-%dT%H:%M:%S.%f%z"
+                            )
+                        ).seconds
+                        / 60,
+                    )
+                )
+
+            combined_ativ = pd.DataFrame(
+                exercicio, columns=["Tarefa", "Início", "Fim", "Duração (min)"]
+            )
+
+            dfs = [df_bpm, df_glicose, df_oxigenio, df_pressao, df_temperatura]
+            combined_df = reduce(
+                lambda left, right: pd.merge(left, right, on="timestamp", how="outer"),
+                dfs,
+            )
+            
+            combined_df["timestamp"] = pd.to_datetime(combined_df["timestamp"], format="mixed")
+            combined_df.sort_values("timestamp", inplace=True)
+            combined_df["atividade"] = 0
+            for i in exercicio:
+                _, start, end, _ = i
+                combined_df.loc[
+                    (
+                        combined_df["timestamp"]
+                        >= pd.to_datetime(
+                            datetime.strptime(start, "%Y-%m-%dT%H:%M:%S.%f%z"),
+                        )
+                    )
+                    & (
+                        combined_df["timestamp"]
+                        <= pd.to_datetime(
+                            datetime.strptime(end, "%Y-%m-%dT%H:%M:%S.%f%z"),
+                        )
+                    ),
+                    "atividade",
+                ] = 1
+            combined_df["dispositivo_estado"] = "Ativo"
+            combined_df = detectar_anomalias(combined_df)
+            return combined_df, combined_ativ
+
+        return pd.DataFrame(), pd.DataFrame()
     except Exception as e:
         st.error(f"Erro ao buscar dados: {str(e)}")
         return pd.DataFrame(), pd.DataFrame()
@@ -397,7 +526,7 @@ with st.sidebar:
                 st.session_state.logged_in = False
                 del st.session_state.medico
                 st.rerun()
-                
+
     with st.expander("👥 Gerenciar Pacientes"):
         col1, col2 = st.columns(2)
         with col1:
@@ -439,6 +568,7 @@ with st.sidebar:
 
     paciente = st.selectbox("👨 Paciente", st.session_state.PACIENTES)
     tempo_real = st.checkbox("⏱️ Monitoramento em Tempo Real", True)
+    api = st.checkbox("🌐 Coletar dados da API", False)
 
     if not tempo_real:
         st.subheader("📅 Período Histórico")
@@ -588,67 +718,61 @@ def create_vital_chart(df, df_atividades):
 
 def create_anomaly_chart(df):
     fig = go.Figure()
-    
-    if not df.empty and 'Motivo' in df.columns:
+
+    if not df.empty and "Motivo" in df.columns:
         # Convert timestamp to datetime if not already
-        df['Data/Hora'] = pd.to_datetime(df['Data/Hora'])
-        
+        df["Data/Hora"] = pd.to_datetime(df["Data/Hora"], dayfirst=True)
+
         # Split and explode motives
         df_exp = df.copy()
-        df_exp['Motivo'] = df_exp['Motivo'].str.split(', ')
-        df_exp = df_exp.explode('Motivo').reset_index(drop=True)
-        
+        df_exp["Motivo"] = df_exp["Motivo"].str.split(", ")
+        df_exp = df_exp.explode("Motivo").reset_index(drop=True)
+
         # Clean motives and handle empty values
-        df_exp['Motivo'] = (
-            df_exp['Motivo']
-            .fillna('No Anomaly')
-            .replace('', 'No Anomaly')
+        df_exp["Motivo"] = (
+            df_exp["Motivo"].fillna("No Anomaly").replace("", "No Anomaly")
         )
-        
+
         # Filter out non-anomaly entries if needed
-        df_exp = df_exp[df_exp['Motivo'] != 'No Anomaly']
-        
+        df_exp = df_exp[df_exp["Motivo"] != "No Anomaly"]
+
         # Create proper counts using EXPLODED dataframe
         grouped = (
-            df_exp.groupby(['Data/Hora', 'Motivo'])
+            df_exp.groupby(["Data/Hora", "Motivo"])
             .size()
             .unstack(fill_value=0)
             .reset_index()
-            .melt(
-                id_vars='Data/Hora', 
-                value_name='count', 
-                var_name='motive'
-            )
+            .melt(id_vars="Data/Hora", value_name="count", var_name="motive")
         )
 
         # Create color mapping
-        motives = grouped['motive'].unique()
-        color_map = {m: COLOR_PALETTE[i%len(COLOR_PALETTE)] 
-                    for i, m in enumerate(motives)}
+        motives = grouped["motive"].unique()
+        color_map = {
+            m: COLOR_PALETTE[i % len(COLOR_PALETTE)] for i, m in enumerate(motives)
+        }
 
         # Add stacked bars
         for motive in motives:
-            motive_df = grouped[grouped['motive'] == motive]
-            fig.add_trace(go.Bar(
-                x=motive_df['Data/Hora'],
-                y=motive_df['count'],
-                name=motive,
-                marker_color=color_map[motive],
-            ))
+            motive_df = grouped[grouped["motive"] == motive]
+            fig.add_trace(
+                go.Bar(
+                    x=motive_df["Data/Hora"],
+                    y=motive_df["count"],
+                    name=motive,
+                    marker_color=color_map[motive],
+                )
+            )
 
         # Configure layout
         fig.update_layout(
-            barmode='stack',
+            barmode="stack",
             height=400,
             template="plotly_white",
             xaxis_title="Timestamp",
             yaxis_title="Total Anomalies",
             hovermode="x unified",
             legend_title="Anomaly Motive",
-            xaxis=dict(
-                type='date',
-                tickformat='%Y-%m-%d %H:%M'
-            )
+            xaxis=dict(type="date", tickformat="%Y-%m-%d %H:%M"),
         )
 
     return fig
@@ -674,7 +798,11 @@ try:
             del st.session_state.dados_acumulados[paciente]
         st.session_state.current_paciente = paciente
 
-    df, df_atividades = fetch_data()
+    if api:
+        df, df_atividades = fetch_data_from_api()
+    else:
+        df, df_atividades = fetch_data()
+
     alertas = check_alertas(df)
 
     if df.empty:
@@ -693,10 +821,14 @@ try:
 
         with tab2:
             df_anomalias = processar_anomalias(df)
-            st.plotly_chart(create_anomaly_chart(df_anomalias), use_container_width=True)
+            st.plotly_chart(
+                create_anomaly_chart(df_anomalias), use_container_width=True
+            )
 
             if not df_anomalias.empty:
-                df_anomalias = df_anomalias.sort_values(by=["Data/Hora"], ascending=False)
+                df_anomalias = df_anomalias.sort_values(
+                    by=["Data/Hora"], ascending=False
+                )
                 st.subheader("📋 Detalhes das Anomalias Detectadas")
                 st.dataframe(
                     df_anomalias,
@@ -727,7 +859,7 @@ try:
 
         with tab3:
             st.header("📊 Configurar Limites")
-            
+
             with st.form("limites_form"):
                 novos_limites = {}
                 for param, attrs in st.session_state.limites.items():
